@@ -2,6 +2,8 @@ package com.gojek.parking;
 
 import java.util.Scanner;
 
+import com.gojek.parking.service.ParkingLotService;
+
 /**
  * Main controller class for parking lot application
  * @author arisculala
@@ -20,7 +22,8 @@ public class ParkingLotMainApp
             // Check if input is a valid filename
             String filename = args[0];
             if(filename.contains(".txt")) {
-                // Process file input
+                // Process file input check contents
+                
             } else {
                 System.out.println("Invalid file format!");
             }
@@ -43,7 +46,8 @@ public class ParkingLotMainApp
                 // Capture the user input in scanner object and store it in a pre declared variable
                 userInput = scanner.nextLine();
 
-                
+                // Call parking lot service class executeCommand to process user input and create the corresponding response
+                ParkingLotService.executeCommand(userInput);
             }
             
         }
