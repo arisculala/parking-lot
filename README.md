@@ -1,4 +1,4 @@
-# The problem solution is written in Java and maven to compile the project into a set of executable jar file
+The problem solution is written in Java and maven to compile the project into a set of executable jar file
 	Application Build Requirements
 		OSX or Linux machine
 		Latest version of Java JDK
