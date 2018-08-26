@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URL;
 
@@ -46,7 +47,7 @@ public class ParkingLotMainAppTest extends TestCase {
      * - NOTE: If we do not want to test the output from the System.out.println() method,
      *      we can change the parking lot service method to return String instead
      */
-    public void testParkingLot() {
+    public void testParkingLotInteractive() {
         ParkingLotService.reInitializedParkingSlots();
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -232,5 +233,53 @@ public class ParkingLotMainAppTest extends TestCase {
         helpList.append("      * (Exit the application)\n");
         helpList.append("\n");
         assertEquals(helpList.toString(), outContent.toString());
+    }
+
+    /**
+     * Test parking lot interactive response
+     * - For every method test we will be getting the response from the System.out.println() method
+     * - NOTE: If we do not want to test the output from the System.out.println() method,
+     *      we can change the parking lot service method to return String instead
+     */
+    public void testParkingLotInputFilename() {
+        ParkingLotService.reInitializedParkingSlots();
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        
+        // Process file input check contents
+        URL input = ParkingLotMainApp.class.getResource(File.separator + "file_input.txt");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(input.openStream()))) {
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                ParkingLotService.executeCommand(sCurrentLine);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        StringBuffer expectedOutput = new StringBuffer();
+        expectedOutput.append("Created a parking lot with 6 slots\n");
+        expectedOutput.append("Allocated slot number: 1\n");
+        expectedOutput.append("Allocated slot number: 2\n");
+        expectedOutput.append("Allocated slot number: 3\n");
+        expectedOutput.append("Allocated slot number: 4\n");
+        expectedOutput.append("Allocated slot number: 5\n");
+        expectedOutput.append("Allocated slot number: 6\n");
+        expectedOutput.append("Slot number 4 is free\n");
+        expectedOutput.append("Slot No.        Registration No        Colour\n");
+        expectedOutput.append("1        KA-01-HH-1234        White\n");
+        expectedOutput.append("2        KA-01-HH-9999        White\n");
+        expectedOutput.append("3        KA-01-BB-0001        Black\n");
+        expectedOutput.append("5        KA-01-HH-2701        Blue\n");
+        expectedOutput.append("6        KA-01-HH-3141        Black\n");
+        expectedOutput.append("Allocated slot number: 4\n");
+        expectedOutput.append("Sorry, parking lot is full\n");
+        expectedOutput.append("KA-01-HH-1234, KA-01-HH-9999, KA-01-P-333\n");
+        expectedOutput.append("1, 2, 4\n");
+        expectedOutput.append("6\n");
+        expectedOutput.append("Not found\n");
+        assertEquals(expectedOutput.toString(), outContent.toString());//Remove the new line created by outContent
+
     }
 }

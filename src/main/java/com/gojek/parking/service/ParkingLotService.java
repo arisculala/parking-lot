@@ -1,9 +1,15 @@
 package com.gojek.parking.service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.gojek.parking.ParkingLotMainApp;
 import com.gojek.parking.domain.Car;
 import com.gojek.parking.domain.Command;
 import com.gojek.parking.domain.ParkingSlot;
@@ -58,6 +64,28 @@ public class ParkingLotService {
             default:
                 // Inform user in case of invalid command
                 System.out.println(userInput + ":" + "is not a valid command. See 'parking_lot_help'");
+        }
+    }
+
+    /**
+     * Process the input filename content
+     * @param filename
+     */
+    public static void processParkingLotInputFilename(String filename) {
+        // Process file input check contents
+        URL input = ParkingLotMainApp.class.getResource(File.separator + filename);
+        if(input == null) {
+            System.out.println("Input file "+filename+" not found!");
+        } else {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(input.openStream()))) {
+                String sCurrentLine;
+                while ((sCurrentLine = br.readLine()) != null) {
+                    ParkingLotService.executeCommand(sCurrentLine);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Input file "+filename+" not found!");
+            }
         }
     }
 

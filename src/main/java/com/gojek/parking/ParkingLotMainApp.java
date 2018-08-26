@@ -5,7 +5,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.Scanner;
 
 import com.gojek.parking.service.ParkingLotService;
@@ -28,20 +31,7 @@ public class ParkingLotMainApp
             // Check if input is a valid filename
             String filename = args[0];
             if(filename.contains(".txt")) {
-                System.out.println(args[0]);
-                // Process file input check contents
-                ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-                System.setOut(new PrintStream(outContent));
-
-                File file = new File("/parking_lot/functional_spec/fixtures/"+args[0]);
-                try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                    String sCurrentLine;
-                    while ((sCurrentLine = br.readLine()) != null) {
-                        ParkingLotService.executeCommand(sCurrentLine);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                ParkingLotService.processParkingLotInputFilename(filename);
             } else {
                 System.out.println("Invalid file format!");
             }
