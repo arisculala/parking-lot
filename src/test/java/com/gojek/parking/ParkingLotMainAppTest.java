@@ -46,7 +46,7 @@ public class ParkingLotMainAppTest extends TestCase {
      * - NOTE: If we do not want to test the output from the System.out.println() method,
      *      we can change the parking lot service method to return String instead
      */
-    public void testParkingLotInteractive() {
+    public void testParkingLot() {
         ParkingLotService.reInitializedParkingSlots();
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -200,52 +200,37 @@ public class ParkingLotMainAppTest extends TestCase {
         command = CommandParserService.parseCommandInput(userInput);
         ParkingLotService.leaveCarpark(command.getOptions());
         assertEquals("Slot number 10 doesn't exist!", outContent.toString().replaceAll("\\n", ""));//Remove the new line created by outContent
-    }
 
-    /**
-     * Test parking lot by filename response
-     * - For every method test we will be getting the response from the System.out.println() method
-     * - NOTE: If we do not want to test the output from the System.out.println() method,
-     *      we can change the parking lot service method to return String instead
-     */
-    public void testParkingLotByFilename() {
-        ParkingLotService.reInitializedParkingSlots();
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
-
-        URL fileUrl = getClass().getResource("file_input.txt");
-        File file = new File(fileUrl.getFile());
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) {
-                ParkingLotService.executeCommand(sCurrentLine);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        StringBuilder expectedOutput = new StringBuilder();
-        expectedOutput.append("Created a parking lot with 6 slots");
-        expectedOutput.append("Allocated slot number: 1");
-        expectedOutput.append("Allocated slot number: 2");
-        expectedOutput.append("Allocated slot number: 3");
-        expectedOutput.append("Allocated slot number: 4");
-        expectedOutput.append("Allocated slot number: 5");
-        expectedOutput.append("Allocated slot number: 6");
-        expectedOutput.append("Slot number 4 is free");
-        expectedOutput.append("Slot No.        Registration No        Colour");
-        expectedOutput.append("1        KA-01-HH-1234        White");
-        expectedOutput.append("2        KA-01-HH-9999        White");
-        expectedOutput.append("3        KA-01-BB-0001        Black");
-        expectedOutput.append("5        KA-01-HH-2701        Blue");
-        expectedOutput.append("6        KA-01-HH-3141        Black");
-        expectedOutput.append("Allocated slot number: 4");
-        expectedOutput.append("Sorry, parking lot is full");
-        expectedOutput.append("KA-01-HH-1234, KA-01-HH-9999, KA-01-P-333");
-        expectedOutput.append("1, 2, 4");
-        expectedOutput.append("6");
-        expectedOutput.append("Not found");
-        assertEquals(expectedOutput.toString(), outContent.toString().replaceAll("\\n", ""));
+        userInput = "create";
+        ParkingLotService.executeCommand(userInput);
+        assertEquals("create:is not a valid command. See 'parking_lot_help'", outContent.toString().replaceAll("\\n", ""));//Remove the new line created by outContent
+        
+        outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        ParkingLotService.displayCommandListHelp();
+        StringBuffer helpList = new StringBuffer();
+        helpList.append("These are common Parking Lot System commands used in various situations:\n");
+        helpList.append("    create_parking_lot <total number of parking slots to be created>\n");
+        helpList.append("      * (This will initialize/reinitialize the total number of parking slot spaces available)\n");
+        helpList.append("    park <registration number> <car colour>\n");
+        helpList.append("      * (Assigned the specified car(registration number, colour) to the nearest available slot near the entry point)\n");
+        helpList.append("    leave <parking slot number>\n");
+        helpList.append("      * (Remove the car details from the specified parking slot number)\n");
+        helpList.append("    status\n");
+        helpList.append("      * (Display the status of all parking slot)\n");
+        helpList.append("    registration_numbers_for_cars_with_colour <car colour>\n");
+        helpList.append("      * (Get list of car's registration number matching the parameter car colour)\n");
+        helpList.append("    slot_numbers_for_cars_with_colour <car colour>\n");
+        helpList.append("      * (Get list of slot numbers matching the parameter car colour)\n");
+        helpList.append("    slot_number_for_registration_number <registration number>\n");
+        helpList.append("      * (Get the slot number for the given parameter car registration number)\n");
+        helpList.append("    parking_lot_help\n");
+        helpList.append("      * (Show list of available parking lot command)\n");
+        helpList.append("    exit\n");
+        helpList.append("      * (Exit the application)\n");
+        helpList.append("\n");
+        assertEquals(helpList.toString(), outContent.toString());
     }
 }
